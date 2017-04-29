@@ -20,6 +20,18 @@ var globals = function(req, res, next) {
         slug: 'benchmarks',
         desc: 'Regular research rounds covering common tasks'
       }
+    ],
+    videos: [
+      {
+        participant: 'Andrew Gnomes',
+        slug: 'andrew-gomes',
+        length: '45m'
+      },
+      {
+        participant: 'Andrew Gnomes',
+        slug: 'andrew-gomes',
+        length: '45m'
+      }
     ]
   };
 

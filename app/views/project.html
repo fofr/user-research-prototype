@@ -17,12 +17,41 @@ Research projects
     </li>
   </ol>
 
-  <h1>
+  <span class="text-muted">Project</span>
+  <h1 class="remove-top-margin">
     {{ project.title }}
   </h1>
-  <p class="lead">
+  <hr />
+
+  <p>
     {{ project.desc }}
   </p>
+
   <hr />
-  </ul>
+
+  <h3>Sessions</h3>
+  {% for video in globals.videos %}
+    <div class="row add-top-margin">
+      <div class="col-md-4">
+        <a href="/projects/{{ project.slug }}/{{ video.slug }}">
+          <img src="{{ asset_path }}images/video-1.png" class="video-thumbnail" />
+        </a>
+      </div>
+      <div class="col-md-8">
+        <h2 class="remove-top-margin">
+          <a href="/projects/{{ project.slug }}/{{ video.slug }}">{{ video.participant }}</a>
+        </h2>
+        <p class="text-muted">
+          28 Apr 2017 &bull; {{ video.length }}
+        </p>
+        <ul>
+          <li>24 notes created by 3 people</li>
+          <li>3 clips</li>
+        </ul>
+        <p>
+          <span class="badge">new user</span> <span class="badge">round 1</span>
+        </p>
+      </div>
+    </div>
+  {% endfor %}
 {% endblock %}
