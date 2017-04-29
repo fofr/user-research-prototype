@@ -1,0 +1,28 @@
+{% extends "layout.html" %}
+
+{% block page_title %}
+Research projects
+{% endblock %}
+
+{% block content %}
+  <ol class="breadcrumb">
+    <li>
+      <a href="/">{{ globals.organisation }}</a>
+    </li>
+    <li>
+      <a href="/projects">Projects</a>
+    </li>
+    <li>
+      {{ project.title }}
+    </li>
+  </ol>
+
+  <h1>
+    {{ project.title }}
+  </h1>
+  <p class="lead">
+    {{ project.desc }}
+  </p>
+  <hr />
+  </ul>
+{% endblock %}

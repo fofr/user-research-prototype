@@ -34,5 +34,11 @@ router.get('/projects', globals, function (req, res) {
   res.render('projects');
 });
 
+router.get('/projects/:project', globals, function (req, res) {
+  var projectSlug = req.params.project,
+      project = res.locals.globals.projects.find(function (p) { return p.slug === projectSlug });
+  res.render('project', { project: project });
+});
+
 // add your routes here
 module.exports = router;
