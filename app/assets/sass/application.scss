@@ -1,5 +1,15 @@
 @import "bootstrap";
+@import "margins";
 
 .navbar {
   border-radius: 0;
+
+  .navbar-brand,
+  .navbar-nav > li > a {
+    color: #fff;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
 }

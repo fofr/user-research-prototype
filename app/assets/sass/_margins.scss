@@ -1,0 +1,114 @@
+$default-vertical-margin: 20px;
+$default-vertical-padding: 20px;
+$default-horizontal-margin: 20px;
+$default-label-margin: 5px;
+
+@mixin add-vertical-margins($important: "") {
+  @include add-top-margin($important);
+  @include add-bottom-margin($important);
+}
+
+@mixin add-top-margin($important: "") {
+  margin-top: $default-vertical-margin unquote($important);
+}
+
+@mixin remove-top-margin($important: "") {
+  margin-top: 0 unquote($important);
+}
+
+@mixin add-bottom-margin($important: "") {
+  margin-bottom: $default-vertical-margin unquote($important);
+}
+
+@mixin remove-bottom-margin($important: "") {
+  margin-bottom: 0 unquote($important);
+}
+
+@mixin add-right-margin($important: "") {
+  margin-right: $default-horizontal-margin unquote($important);
+}
+
+@mixin add-left-margin($important: "") {
+  margin-left: $default-horizontal-margin unquote($important);
+}
+
+@mixin add-label-margin {
+  margin-bottom: $default-label-margin;
+}
+
+@mixin add-vertical-padding($important: "") {
+  @include add-top-padding($important);
+  @include add-bottom-padding($important);
+}
+
+@mixin add-top-padding($important: "") {
+  padding-top: $default-vertical-padding unquote($important);
+}
+
+@mixin add-bottom-padding($important: "") {
+  padding-bottom: $default-vertical-padding unquote($important);
+}
+
+.add-vertical-margins {
+  @include add-vertical-margins('!important');
+}
+
+.add-top-margin {
+  @include add-top-margin('!important');
+}
+
+.remove-top-margin {
+  @include remove-top-margin('!important');
+}
+
+.add-bottom-margin {
+  @include add-bottom-margin('!important');
+}
+
+.add-big-bottom-margin {
+  margin-bottom: $default-vertical-margin * 2 !important;
+}
+
+.remove-bottom-margin {
+  @include remove-bottom-margin('!important');
+}
+
+.add-right-margin {
+  @include add-right-margin('!important');
+}
+
+.add-left-margin {
+  @include add-left-margin('!important');
+}
+
+.dl-spaced dd {
+  margin-bottom: $default-vertical-margin;
+}
+
+.add-label-margin {
+  @include add-label-margin;
+}
+
+.add-vertical-padding {
+  @include add-vertical-padding('!important');
+}
+
+.remove-padding {
+  padding: 0 !important;
+}
+
+.add-top-padding {
+  @include add-top-padding('!important');
+}
+
+.remove-top-padding {
+  padding-top: 0 !important;
+}
+
+.add-bottom-padding {
+  @include add-bottom-padding('!important');
+}
+
+.remove-bottom-padding {
+  padding-bottom: 0 !important;
+}
