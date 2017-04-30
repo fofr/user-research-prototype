@@ -1,0 +1,49 @@
+.vc-wrapper {
+  position: relative;
+  display: inline-block;
+  line-height: 0;
+}
+
+.vc-wrapper .vc {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+
+.vc {
+  display: flex;
+  justify-content: row;
+  align-items: center;
+  font-size: 12px;
+  height: 32px;
+  line-height: 1em;
+}
+
+.vc-play {
+  flex: 0 0 auto;
+  padding: 0 8px;
+}
+
+.vc-time {
+  flex: 0 0 auto;
+  padding: 0 8px;
+}
+
+.vc-timeline {
+  position: relative;
+  flex: 0 1 100%;
+  align-self: stretch;
+}
+
+.vc-buffer,
+.vc-current,
+.vc-range {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 50%;
+  height: 4px;
+  background: red;
+  margin-top: -2px;
+}

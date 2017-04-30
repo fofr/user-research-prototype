@@ -73,14 +73,20 @@
 
   Modules.VideoPlayer = function VideoPlayer() {
     this.start = function start($element) {
-      let range = parseHash(window.location.hash);
-      let startTime = 0;
+      let hash = parseHash(window.location.hash);
+      let startTime = hash.start || 0;
+      let endTime = hash.end || 0;
+
       $element.on({
         abort: function () {
           console.log('playback aborted');
         },
         canplay: function () {
           console.log('video can play');
+          if (startTime) {
+            this.play();
+            startTime = 0;
+          }
         },
         duration: function (event) {
           console.log('duration has changed: ', event);
@@ -92,10 +98,16 @@
           console.log('first frame loaded');
         },
         loadedmetadata: function (event) {
-          console.log('loaded metadata');
+          if (startTime) {
+            this.currentTime = startTime;
+          }
         },
         timeupdate: function (event) {
           $('body').trigger('video:timeupdate', {currentTime: this.currentTime });
+          if (endTime && this.currentTime >= endTime) {
+            this.pause();
+            endTime = 0;
+          }
           console.log('new time: ', this.currentTime);
         }
       });
@@ -114,4 +126,25 @@
 
 function parseHash(str) {
   str = str.replace(/^#/, '');
+  return str.split('&').reduce(function (obj, param) {
+    let parts = param.split('=');
+    obj[parts[0]] = parts[1];
+    return obj;
+  }, {});
+}
+
+function createControls() {
+  return `
+  <div class="vc">
+    <div class="vc-play">Play</div>
+    <div class="vc-time">
+      <span class="vc-min">00</span>:<span class="vc-sec">00</span>
+    </div>
+    <div class="vc-timeline">
+      <div class="vc-buffer"></div>
+      <div class="vc-current"></div>
+      <div class="vc-range"></div>
+    </div>
+  </div>
+  `;
 }
