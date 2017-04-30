@@ -20,16 +20,17 @@
   height: 32px;
   line-height: 1em;
   background: white;
+  color: gray;
+  padding: 0 16px;
 }
 
 .vc-play {
   flex: 0 0 auto;
-  padding: 0 8px;
 }
 
 .vc-time {
   flex: 0 0 auto;
-  padding: 0 8px;
+  padding: 0 16px;
 }
 
 .vc-timeline {
@@ -62,21 +63,20 @@
   }
 }
 
-.vc-buffer {
+.vc-buffer, .vc-range {
   &::before, &::after {
     content: none;
   }
 }
 
 .vc-buffer {
-  background: lightgray;
+  background: #ececec;
 }
 
 .vc-current {
-  background: blue;
+  background: #0072ff;
 }
 
 .vc-range {
-  display: none;
-  background: yellow;
+  background: #ffe37d;
 }

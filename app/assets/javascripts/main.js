@@ -105,14 +105,17 @@
           if (startTime) {
             this.currentTime = startTime;
           }
+          if (startTime || endTime) {
+            controls.setRange(startTime, endTime || this.duration);
+          }
         },
         timeupdate: function (event) {
           $('body').trigger('video:timeupdate', {currentTime: this.currentTime });
           if (endTime && this.currentTime >= endTime) {
             this.pause();
+            this.currentTime = endTime;
             endTime = 0;
           }
-          console.log('new time: ', this.currentTime);
         }
       });
 
@@ -168,7 +171,8 @@ function PlayerControls(video) {
   this.el = el;
 
   video.addEventListener('timeupdate', function (evt) {
-    updateTime();
+    // Skip while dragging...
+    if (lastPosition) { return }
     updateProgress();
   }.bind(this), false);
 
@@ -206,17 +210,29 @@ function PlayerControls(video) {
   }
 
   function updateCursorBy(increment) {
-    let newPositon = Math.min(video.duration, currentPosition + increment);
+    let newPositon = Math.max(0, Math.min(video.duration, currentPosition + increment));
     let percent = newPositon / video.duration;
     currentProgressEl.style.width = `${percent * 100}%`;
     currentPosition = newPositon;
+    updateTime(currentPosition);
   }
 
   function setCursor(time) {
+    time = Math.max(0, time);
     let percent = (time / video.duration);
     currentProgressEl.style.width = `${percent * 100}%`;
     currentPosition = time;
+    updateTime(currentPosition);
   }
+
+  function setRange(startTime, endTime) {
+    var startPercentage = startTime / video.duration;
+    var endPercentage = endTime / video.duration;
+    var widthPercentage = endPercentage - startPercentage;
+    rangeEl.style.left = `${startPercentage * 100}%`;
+    rangeEl.style.width = `${widthPercentage * 100}%`;
+  }
+  this.setRange = setRange;
 
   function handleMouseDown(event) {
     video.pause();
@@ -240,7 +256,6 @@ function PlayerControls(video) {
     lastPosition = {x: event.clientX, y: event.clientY};
 
     let timeIncrement = pixelsToTime(xOffset);
-    console.log(timeIncrement);
     updateCursorBy(timeIncrement);
   }
 
@@ -264,8 +279,7 @@ function PlayerControls(video) {
     playEl.textContent = video.paused ? 'Play' : 'Pause';
   };
 
-  function updateTime () {
-    let time = video.currentTime;
+  function updateTime(time) {
     let hrs = Math.floor(time / 3600);
     let min = Math.floor((time - (hrs * 3600)) / 60);
     let sec = Math.floor((time - (hrs * 3600) - (min * 60)));
@@ -283,9 +297,10 @@ function PlayerControls(video) {
     // TODO:(aron) handle multiple buffered ranges
     let startPercentage = 0;
     let endPercentage = 0;
-    if (video.buffered.length > 0) {
-      startPercentage = Math.max(0, video.buffered.start(0) / video.duration);
-      endPercentage = video.buffered.end(0) / video.duration
+
+    for (var idx = 0; idx < video.buffered.length; idx++) {
+      startPercentage = Math.min(startPercentage, video.buffered.start(idx) / video.duration);
+      endPercentage = Math.max(endPercentage, video.buffered.end(idx) / video.duration);
     }
 
     bufferEl.style.left = `${startPercentage * 100}%`
@@ -293,7 +308,6 @@ function PlayerControls(video) {
   }
 
   updatePlayState();
-  updateTime();
   updateProgress();
   updateBuffer();
 
