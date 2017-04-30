@@ -2,6 +2,7 @@
   position: relative;
   display: inline-block;
   line-height: 0;
+  padding-bottom: 32px;
 }
 
 .vc-wrapper .vc {
@@ -18,6 +19,7 @@
   font-size: 12px;
   height: 32px;
   line-height: 1em;
+  background: white;
 }
 
 .vc-play {
@@ -42,8 +44,39 @@
   position: absolute;
   top: 50%;
   left: 0;
-  right: 50%;
   height: 4px;
-  background: red;
   margin-top: -2px;
+
+  &::after {
+    content: "";
+    display: block;
+    background: gray;
+    width: 12px;
+    height: 12px;
+    border-radius: 100%;
+    position: absolute;
+    right: 0;
+    top: 2px;
+    margin-right: -6px;
+    margin-top: -6px;
+  }
+}
+
+.vc-buffer {
+  &::before, &::after {
+    content: none;
+  }
+}
+
+.vc-buffer {
+  background: lightgray;
+}
+
+.vc-current {
+  background: blue;
+}
+
+.vc-range {
+  display: none;
+  background: yellow;
 }

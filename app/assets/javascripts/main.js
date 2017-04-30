@@ -68,16 +68,20 @@
         updateVideoStatus('');
         $('body').trigger('note:stopped-typing');
       }
-    }
-  }
+    };
+  };
 
   Modules.VideoPlayer = function VideoPlayer() {
     this.start = function start($element) {
-      let hash = parseHash(window.location.hash);
-      let startTime = hash.start || 0;
-      let endTime = hash.end || 0;
+      var video = $element.find('video')[0];
+      var hash = parseHash(window.location.hash);
+      var startTime = hash.start || 0;
+      var endTime = hash.end || 0;
+      var controls = new PlayerControls(video);
 
-      $element.on({
+      $element.append(controls.el);
+
+      $(video).on({
         abort: function () {
           console.log('playback aborted');
         },
@@ -134,12 +138,10 @@ function parseHash(str) {
 }
 
 function createControls() {
-  return `
+  var html = `
   <div class="vc">
     <div class="vc-play">Play</div>
-    <div class="vc-time">
-      <span class="vc-min">00</span>:<span class="vc-sec">00</span>
-    </div>
+    <div class="vc-time">00:00</div>
     <div class="vc-timeline">
       <div class="vc-buffer"></div>
       <div class="vc-current"></div>
@@ -147,4 +149,159 @@ function createControls() {
     </div>
   </div>
   `;
+  var parser = new DOMParser();
+  var doc = parser.parseFromString(html, "text/html");
+  return doc.body.firstChild;
+}
+
+function PlayerControls(video) {
+  video.controls = false;
+  var el = createControls();
+  var playEl = el.querySelector('.vc-play');
+  var timelineEl = el.querySelector('.vc-timeline');
+  var currentTimeEl = el.querySelector('.vc-time');
+  var bufferEl = el.querySelector('.vc-buffer');
+  var currentProgressEl = el.querySelector('.vc-current');
+  var rangeEl = el.querySelector('.vc-range');
+  var mouseDownPoint = null
+
+  this.el = el;
+
+  video.addEventListener('timeupdate', function (evt) {
+    updateTime();
+    updateProgress();
+  }.bind(this), false);
+
+  video.addEventListener('progress', function (evt) {
+    updateBuffer();
+  }.bind(this), false);
+
+  video.addEventListener('pause', function (evt) {
+    updatePlayState();
+  }.bind(this), false);
+
+  video.addEventListener('playing', function (evt) {
+    updatePlayState();
+  }.bind(this), false);
+
+  playEl.addEventListener('click', function () {
+    if (video.paused) {
+      video.play();
+    } else {
+      video.pause();
+    }
+  }, false);
+
+  var root = document.documentElement;
+  var lastPosition = null;
+  var currentPosition = 0;
+
+  function pixelsToTime(px) {
+    let percent = px / timelineEl.offsetWidth;
+    return video.duration * percent;
+  }
+
+  function seek(time) {
+    video.currentTime = Math.min(Math.max(0, time), video.duration);
+  }
+
+  function updateCursorBy(increment) {
+    let newPositon = Math.min(video.duration, currentPosition + increment);
+    let percent = newPositon / video.duration;
+    currentProgressEl.style.width = `${percent * 100}%`;
+    currentPosition = newPositon;
+  }
+
+  function setCursor(time) {
+    let percent = (time / video.duration);
+    currentProgressEl.style.width = `${percent * 100}%`;
+    currentPosition = time;
+  }
+
+  function handleMouseDown(event) {
+    video.pause();
+
+    root.addEventListener('mousemove', handleMouseMove);
+    root.addEventListener('mouseup', handleMouseUp);
+
+    lastPosition = {
+      x: event.clientX,
+      y: event.clientY,
+    };
+
+    var time = pixelsToTime(event.offsetX);
+    seek(time);
+    setCursor(time);
+  }
+
+  function handleMouseMove(event) {
+    if (!lastPosition) { return }
+    var xOffset = event.clientX - lastPosition.x;
+    lastPosition = {x: event.clientX, y: event.clientY};
+
+    let timeIncrement = pixelsToTime(xOffset);
+    console.log(timeIncrement);
+    updateCursorBy(timeIncrement);
+  }
+
+  function handleMouseUp(event) {
+    if (!lastPosition) { return }
+    var xOffset = event.clientX - lastPosition.x;
+    lastPosition = {x: event.clientX, y: event.clientY};
+
+    let timeIncrement = pixelsToTime(xOffset);
+    updateCursorBy(timeIncrement);
+    seek(currentPosition);
+
+    lastPosition = null
+    root.removeEventListener('mousemove', handleMouseMove);
+    root.removeEventListener('mouseup', handleMouseUp);
+  }
+
+  timelineEl.addEventListener('mousedown', handleMouseDown);
+
+  function updatePlayState () {
+    playEl.textContent = video.paused ? 'Play' : 'Pause';
+  };
+
+  function updateTime () {
+    let time = video.currentTime;
+    let hrs = Math.floor(time / 3600);
+    let min = Math.floor((time - (hrs * 3600)) / 60);
+    let sec = Math.floor((time - (hrs * 3600) - (min * 60)));
+
+    currentTimeEl.textContent = `${pad(hrs)}:${pad(min)}:${pad(sec)}`;
+  }
+
+  function updateProgress() {
+    // Don't update while dragging.
+    if (lastPosition) { return }
+    setCursor(video.currentTime);
+  }
+
+  function updateBuffer() {
+    // TODO:(aron) handle multiple buffered ranges
+    let startPercentage = 0;
+    let endPercentage = 0;
+    if (video.buffered.length > 0) {
+      startPercentage = Math.max(0, video.buffered.start(0) / video.duration);
+      endPercentage = video.buffered.end(0) / video.duration
+    }
+
+    bufferEl.style.left = `${startPercentage * 100}%`
+    bufferEl.style.width = `${endPercentage * 100}%`
+  }
+
+  updatePlayState();
+  updateTime();
+  updateProgress();
+  updateBuffer();
+
+}
+
+function pad(int) {
+  if (int < 10) {
+    return `0${int}`
+  }
+  return String(int);
 }
