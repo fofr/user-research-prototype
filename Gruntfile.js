@@ -28,12 +28,7 @@ module.exports = function(grunt){
           cwd: 'app/assets/',
           src: ['**/*', '!sass/**'],
           dest: 'public/'
-        }],
-        ignoreInDest: "**/stylesheets/**",
-        updateAndDelete: true
-      },
-      bootstrap: {
-        files: [{
+        }, {
           cwd: 'node_modules/bootstrap-sass/assets/javascripts/',
           src: 'bootstrap.min.js',
           dest: 'public/javascripts'
@@ -41,7 +36,9 @@ module.exports = function(grunt){
           cwd: 'node_modules/bootstrap-sass/assets/fonts/',
           src: ['**/*'],
           dest: 'public/fonts'
-        }]
+        }],
+        ignoreInDest: "**/stylesheets/**",
+        updateAndDelete: true
       }
     },
 
