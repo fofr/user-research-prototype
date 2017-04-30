@@ -26,8 +26,45 @@ Research projects
   </h1>
   <hr />
 
-  <video width="620" controls class="research-video" data-module="video-player">
-    <source src="{{ asset_path }}/videos/test-video.mov" type="video/mp4">
-    Your browser doesn't support the HTML5 video tag.
-  </video>
+  <div class="row">
+    <div class="col-md-8">
+      <div class="video-container">
+        <video width="620" controls class="research-video" data-module="video-player">
+          <source src="{{ asset_path }}/videos/test-video.mov" type="video/mp4">
+          Your browser doesn't support the HTML5 video tag.
+        </video>
+      </div>
+
+      <div data-module="notes">
+        <form action="#" class="note-form add-top-margin">
+          <div class="form-group">
+            <label for="form-note-input">Note</label>
+            <textarea class="form-control" id="form-note-input"></textarea>
+          </div>
+          <input type="submit" value="Add note" class="btn btn-primary">
+        </form>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div data-module="notes">
+        <form action="#" class="note-form">
+          <div class="form-group">
+            <label for="note-content">1m20: Note</label>
+            <textarea class="form-control" name="note-content" id="note-content"></textarea>
+          </div>
+          <input type="submit" value="Add note" class="btn btn-primary">
+        </form>
+
+        <div class="notes">
+          <div class="note">
+            <span class="note-timestamp">1m20</span>
+            <div class="note-content">
+              <p>Some note about this thing</p>
+            </div>
+            <p class="note-meta">– Paul H</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 {% endblock %}

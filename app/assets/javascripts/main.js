@@ -1,4 +1,26 @@
 (function (Modules) {
+  Modules.Notes = function Notes() {
+    this.start = function start($element) {
+      $element.on('submit', 'form', addNote);
+
+      function addNote(evt) {
+        evt.preventDefault();
+
+        var note = $(this).find('textarea').val();
+
+        $element.find('.notes').prepend('\
+          <div class="note">\
+            <span class="note-timestamp">1m20</span>\
+            <div class="note-content" contenteditable>'+ note +'</div>\
+            <div class="note-meta">– Paul H</div>\
+          </div>\
+          ')
+
+        $(this).find('textarea').val('').focus();
+      }
+    }
+  }
+
   Modules.VideoPlayer = function VideoPlayer() {
     this.start = function start($element) {
       let range = parseHash(window.location.hash);
