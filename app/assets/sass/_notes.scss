@@ -6,12 +6,25 @@ $post-it-yellow: #ffff95;
 }
 
 .note-form {
-  border: 2px solid #000;
-  padding: 20px;
+  border: 2px solid #ccc;
+  position: relative;
+  border-radius: 0 !important;
+}
+
+.note-form .btn {
+  position: absolute;
+  right: 10px;
+  bottom: 10px;
+}
+
+.note-box {
+  border-width: 0;
+  resize: none;
+  font-size: 16px;
 }
 
 .note {
-  margin-top: 20px;
+  margin-bottom: 20px;
   background: $post-it-yellow;
   padding: 20px;
 }

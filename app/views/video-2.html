@@ -24,28 +24,26 @@ Research projects
   <h1 class="remove-top-margin">
     {{ video.participant }}
   </h1>
+  <hr />
 
-  <div class="row add-top-margin">
-    <div class="col-md-8">
+  <div class="row" data-module="notes">
+    <div class="col-md-6">
       <div class="video-container">
         <video width="620" controls class="research-video" data-module="video-player">
           <source src="{{ asset_path }}/videos/test-video.mov" type="video/mp4">
           Your browser doesn't support the HTML5 video tag.
         </video>
       </div>
+      {% include "partials/_notes_form.html" %}
     </div>
-    <div class="col-md-4">
-      <div data-module="notes">
-        {% include "partials/_notes_form.html" %}
-
-        <div class="notes">
-          <div class="note">
-            <a href="#start=20" class="note-timestamp"><span class="glyphicon glyphicon-film"></span> 1:20</a>
-            <div class="note-content">
-              <p>Some note about this thing</p>
-            </div>
-            <p class="note-meta">– Paul H</p>
+    <div class="col-md-6">
+      <div class="notes">
+        <div class="note">
+          <a href="#start=20" class="note-timestamp"><span class="glyphicon glyphicon-film"></span> 1:20</a>
+          <div class="note-content">
+            <p>Some note about this thing</p>
           </div>
+          <p class="note-meta">– Paul H</p>
         </div>
       </div>
     </div>

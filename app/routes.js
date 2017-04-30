@@ -55,10 +55,13 @@ router.get('/projects/:project', globals, function (req, res) {
 router.get('/projects/:project/:video', globals, function (req, res) {
   var projectSlug = req.params.project,
       videoSlug = req.params.video,
-      project = res.locals.globals.projects.find(function (p) { return p.slug === projectSlug });
-      video = res.locals.globals.videos.find(function (v) { return v.slug === videoSlug });
+      project = res.locals.globals.projects.find(function (p) { return p.slug === projectSlug }),
+      video = res.locals.globals.videos.find(function (v) { return v.slug === videoSlug }),
+      template;
 
-  res.render('video', { project: project, video: video });
+      template = req.query.template ? req.query.template : 'video';
+
+  res.render(template, { project: project, video: video });
 });
 
 // add your routes here
