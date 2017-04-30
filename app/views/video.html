@@ -1,0 +1,33 @@
+{% extends "layout.html" %}
+
+{% block page_title %}
+Research projects
+{% endblock %}
+
+{% block content %}
+  <ol class="breadcrumb">
+    <li>
+      <a href="/">{{ globals.organisation }}</a>
+    </li>
+    <li>
+      <a href="/projects">Projects</a>
+    </li>
+    <li>
+      <a href="/projects/{{ project.slug }}">{{ project.title }}</a>
+    </li>
+    <li>
+      {{ video.participant }}
+    </li>
+  </ol>
+
+  <span class="text-muted">Research session</span>
+  <h1 class="remove-top-margin">
+    {{ video.participant }}
+  </h1>
+  <hr />
+
+  <video width="620" controls>
+    <source src="{{ asset_path }}/videos/test-video.mov" type="video/mp4">
+    Your browser doesn't support the HTML5 video tag.
+  </video>
+{% endblock %}
