@@ -2,6 +2,18 @@
   Modules.Notes = function Notes() {
     this.start = function start($element) {
       $element.on('submit', 'form', addNote);
+      $element.on('keyup', 'textarea', submit);
+
+      // TODO:
+      // Pause video when typing
+      // Resume video when no longer typing
+      // Timestamp: X seconds behind
+
+      function submit(evt) {
+        if (evt.key === 'Enter') {
+          $element.find('form').trigger('submit');
+        }
+      }
 
       function addNote(evt) {
         evt.preventDefault();
