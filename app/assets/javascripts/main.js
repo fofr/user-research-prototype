@@ -176,6 +176,11 @@ function PlayerControls(video) {
     updateProgress();
   }.bind(this), false);
 
+  video.addEventListener('seeking', function (evt) {
+    // Skip while dragging...
+    updateProgress();
+  }.bind(this), false);
+
   video.addEventListener('progress', function (evt) {
     updateBuffer();
   }.bind(this), false);
@@ -198,7 +203,6 @@ function PlayerControls(video) {
 
   var root = document.documentElement;
   var lastPosition = null;
-  var currentPosition = 0;
 
   function pixelsToTime(px) {
     let percent = px / timelineEl.offsetWidth;
@@ -209,20 +213,20 @@ function PlayerControls(video) {
     video.currentTime = Math.min(Math.max(0, time), video.duration);
   }
 
-  function updateCursorBy(increment) {
-    let newPositon = Math.max(0, Math.min(video.duration, currentPosition + increment));
-    let percent = newPositon / video.duration;
-    currentProgressEl.style.width = `${percent * 100}%`;
-    currentPosition = newPositon;
-    updateTime(currentPosition);
-  }
+  // function updateCursorBy(increment) {
+  //   let newPositon = Math.max(0, Math.min(video.duration, currentPosition + increment));
+  //   let percent = newPositon / video.duration;
+  //   currentProgressEl.style.width = `${percent * 100}%`;
+  //   currentPosition = newPositon;
+  //   updateTime(currentPosition);
+  // }
 
   function setCursor(time) {
     time = Math.max(0, time);
     let percent = (time / video.duration);
     currentProgressEl.style.width = `${percent * 100}%`;
-    currentPosition = time;
-    updateTime(currentPosition);
+    // currentPosition = time;
+    updateTime(time);
   }
 
   function setRange(startTime, endTime) {
@@ -256,7 +260,8 @@ function PlayerControls(video) {
     lastPosition = {x: event.clientX, y: event.clientY};
 
     let timeIncrement = pixelsToTime(xOffset);
-    updateCursorBy(timeIncrement);
+    // updateCursorBy(timeIncrement);
+    seek(video.currentTime + timeIncrement);
   }
 
   function handleMouseUp(event) {
@@ -265,8 +270,7 @@ function PlayerControls(video) {
     lastPosition = {x: event.clientX, y: event.clientY};
 
     let timeIncrement = pixelsToTime(xOffset);
-    updateCursorBy(timeIncrement);
-    seek(currentPosition);
+    seek(video.currentTime + timeIncrement);
 
     lastPosition = null
     root.removeEventListener('mousemove', handleMouseMove);
@@ -288,8 +292,6 @@ function PlayerControls(video) {
   }
 
   function updateProgress() {
-    // Don't update while dragging.
-    if (lastPosition) { return }
     setCursor(video.currentTime);
   }
 
