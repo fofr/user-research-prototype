@@ -2,17 +2,14 @@
   Modules.Notes = function Notes() {
     this.start = function start($element) {
       $element.on('submit', 'form', addNote);
-      $element.on('keyup', 'textarea', submit);
+      $element.on('keyup', 'textarea', whenTyping);
 
       var $noteTimestamp = $element.find('.js-note-timestamp');
-      var currentTime = 0;
+      var currentTime = '0:00';
+      var typingTimeout;
+      var typingInterval;
 
       $('body').on('video:timeupdate', updateNoteTimestamp);
-
-      // TODO:
-      // Pause video when typing
-      // Resume video when no longer typing
-      // Timestamp: X seconds behind
 
       function updateNoteTimestamp(evt, data) {
         time = Math.ceil(data.currentTime);
@@ -20,9 +17,34 @@
         $noteTimestamp.text(currentTime);
       }
 
-      function submit(evt) {
+      function updateVideoStatus(status) {
+        $element.find('.js-video-status').html(status);
+      }
+
+      function whenTyping(evt) {
+        seconds = 10;
+
         if (evt.key === 'Enter') {
           $element.find('form').trigger('submit');
+        } else {
+          $('body').trigger('note:typing');
+          updateVideoStatus(`Video paused. Resuming in ${seconds}s`);
+
+          clearInterval(typingInterval);
+          typingInterval = setInterval(function() {
+            seconds--;
+            updateVideoStatus(`Video paused. Resuming in ${seconds}s`);
+
+            if (seconds <= 1) {
+              clearInterval(typingInterval);
+            }
+          }, 1000);
+
+          clearTimeout(typingTimeout);
+          typingTimeout = setTimeout(function() {
+            $('body').trigger('note:stopped-typing');
+            updateVideoStatus('');
+          }, 10000)
         }
       }
 
@@ -40,6 +62,11 @@
           `)
 
         $(this).find('textarea').val('').focus();
+
+        clearInterval(typingInterval);
+        clearTimeout(typingTimeout);
+        updateVideoStatus('');
+        $('body').trigger('note:stopped-typing');
       }
     }
   }
@@ -71,6 +98,14 @@
           $('body').trigger('video:timeupdate', {currentTime: this.currentTime });
           console.log('new time: ', this.currentTime);
         }
+      });
+
+      $('body').on('note:typing', function() {
+        $element.get(0).pause();
+      });
+
+      $('body').on('note:stopped-typing', function() {
+        $element.get(0).play();
       });
     }
   };
