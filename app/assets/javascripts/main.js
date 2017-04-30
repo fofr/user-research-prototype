@@ -20,13 +20,13 @@
 
         var note = $(this).find('textarea').val();
 
-        $element.find('.notes').prepend('\
-          <div class="note">\
-            <span class="note-timestamp">1m20</span>\
-            <div class="note-content" contenteditable>'+ note +'</div>\
-            <div class="note-meta">– Paul H</div>\
-          </div>\
-          ')
+        $element.find('.notes').prepend(`
+          <div class="note">
+            <a href="#start=20" class="note-timestamp">1m20</a>
+            <div class="note-content" contenteditable>${note}</div>
+            <div class="note-meta">– Paul H</div>
+          </div>
+          `)
 
         $(this).find('textarea').val('').focus();
       }
